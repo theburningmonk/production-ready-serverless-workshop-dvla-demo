@@ -120,3 +120,11 @@ resources:
       Properties: 
         DisplayName: restaurants-${self:provider.stage}-yancui
         TopicName: restaurants-${self:provider.stage}-yancui
+
+    mySubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: <INSERT EMAIL HERE>
+        Protocol: email
+        TopicArn: 
+          Ref: restaurantNotificationTopic            

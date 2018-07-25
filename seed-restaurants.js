@@ -49,7 +49,12 @@ let restaurants = [
 ];
 
 const getTableName = async () => {
-  return `restaurants-${STAGE}-yancui`
+  console.log('getting table name...')
+  const req = {
+    Name: `/workshop-yancui/${STAGE}/table_name`
+  }
+  const ssmResp = await ssm.getParameter(req).promise()
+  return ssmResp.Parameter.Value
 }
 
 const run = async () => {

@@ -41,6 +41,7 @@ const init = async () => {
   process.env.AWS_REGION                    = REGION
   process.env.order_events_stream           = params.stream_name
   process.env.restaurant_notification_topic = params.restaurant_topic_name
+  process.env.AWS_XRAY_CONTEXT_MISSING = 'LOG_ERROR'
   
   initialized = true
 }

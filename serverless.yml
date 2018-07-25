@@ -3,12 +3,16 @@ service: workshop-yancui
 plugins:
   - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
+  - serverless-plugin-tracing
 
 custom:
   stage: ${opt:stage, self:provider.stage}
   logLevel:
     prod: INFO
     default: DEBUG
+
+  serverless-iam-roles-per-function:
+    defaultInherit: true
 
 provider:
   name: aws
@@ -17,6 +21,14 @@ provider:
   region: eu-west-1
   environment:
     log_level: ${self:custom.logLevel.${self:custom.stage}, self:custom.logLevel.default}
+  tracing: true
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
 
 functions:
   get-index:
@@ -151,7 +163,7 @@ resources:
     mySubscription:
       Type: AWS::SNS::Subscription
       Properties:
-        Endpoint: <INSERT EMAIL HERE>
+        Endpoint: theburningmonk@gmail.com
         Protocol: email
         TopicArn: 
           Ref: restaurantNotificationTopic            

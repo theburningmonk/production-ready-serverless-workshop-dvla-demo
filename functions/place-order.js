@@ -1,6 +1,9 @@
 const wrap = require('../lib/wrapper')
 const Log        = require('../lib/log')
-const AWS        = require('aws-sdk')
+const AWSXRay = require('aws-xray-sdk-core')
+const AWS = process.env.LAMBDA_RUNTIME_DIR
+  ? AWSXRay.captureAWS(require('aws-sdk'))
+  : require('aws-sdk')
 const kinesis    = new AWS.Kinesis()
 const chance     = require('chance').Chance()
 const streamName = process.env.order_events_stream

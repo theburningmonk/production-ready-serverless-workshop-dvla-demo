@@ -28,8 +28,10 @@ describe(`When we invoke the POST /orders endpoint`, () => {
   it(`Should return 200`, async () => {
     expect(resp.statusCode).to.equal(200)
   })
-
-  it(`Should publish a message to Kinesis stream`, async () => {
-    expect(isEventPublished).to.be.true
-  })
+  
+  if (process.env.TEST_MODE === 'handler') {
+    it(`Should publish a message to Kinesis stream`, async () => {
+      expect(isEventPublished).to.be.true
+    })
+  }
 })

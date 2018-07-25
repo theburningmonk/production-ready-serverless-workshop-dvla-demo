@@ -1,3 +1,4 @@
+const Log = require('../lib/log')
 const wrap = require('../lib/wrapper')
 const AWSXRay = require('aws-xray-sdk-core')
 const AWS = process.env.LAMBDA_RUNTIME_DIR
@@ -20,6 +21,7 @@ const getRestaurants = async (count) => {
 
 module.exports.handler = wrap(async (event, context) => {
   const restaurants = await getRestaurants(defaultResults)
+  Log.debug(`fetched ${restaurants.length} restaurants`)
   const response = {
     statusCode: 200,
     body: JSON.stringify(restaurants)

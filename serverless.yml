@@ -21,6 +21,7 @@ provider:
   region: eu-west-1
   environment:
     log_level: ${self:custom.logLevel.${self:custom.stage}, self:custom.logLevel.default}
+    STAGE: ${self:custom.stage}
   tracing: true
   iamRoleStatements:
     - Effect: "Allow"
@@ -163,7 +164,7 @@ resources:
     mySubscription:
       Type: AWS::SNS::Subscription
       Properties:
-        Endpoint: theburningmonk@gmail.com
+        Endpoint: ${ssm:/${self:service}/${self:provider.stage}/email}
         Protocol: email
         TopicArn: 
-          Ref: restaurantNotificationTopic            
+          Ref: restaurantNotificationTopic

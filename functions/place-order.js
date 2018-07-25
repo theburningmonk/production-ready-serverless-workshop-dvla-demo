@@ -1,3 +1,4 @@
+const Log        = require('../lib/log')
 const AWS        = require('aws-sdk')
 const kinesis    = new AWS.Kinesis()
 const chance     = require('chance').Chance()
@@ -7,7 +8,7 @@ module.exports.handler = async (event, context) => {
   const restaurantName = JSON.parse(event.body).restaurantName
 
   const orderId = chance.guid()
-  console.log(`placing order ID [${orderId}] to [${restaurantName}]`)
+  Log.debug(`placing order ID [${orderId}] to [${restaurantName}]`)
 
   const data = {
     orderId,
@@ -23,7 +24,7 @@ module.exports.handler = async (event, context) => {
 
   await kinesis.putRecord(req).promise()
 
-  console.log(`published 'order_placed' event into Kinesis`)
+  Log.debug(`published 'order_placed' event into Kinesis`)
 
   const response = {
     statusCode: 200,

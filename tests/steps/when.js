@@ -1,3 +1,4 @@
+const util = require('util')
 const APP_ROOT = '../../'
 const _ = require('lodash')
 const aws4 = require('aws4')
@@ -75,7 +76,7 @@ const viaHttp = async (relPath, method, opts) => {
 }
 
 const viaHandler = async (event, functionName) => {
-  const handler = require(`${APP_ROOT}/functions/${functionName}`).handler
+  const handler = util.promisify(require(`${APP_ROOT}/functions/${functionName}`).handler)
   console.log(`invoking via handler function ${functionName}`)
 
   const context = {}

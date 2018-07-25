@@ -1,3 +1,4 @@
+const wrap = require('../lib/wrapper')
 const fs = require("fs")
 const Mustache = require('mustache')
 const http = require('superagent-promise')(require('superagent'), Promise)
@@ -24,7 +25,7 @@ const getRestaurants = async () => {
   return (await httpReq).body
 }
 
-module.exports.handler = async (event, context) => {
+module.exports.handler = wrap(async (event, context) => {
   const template = loadHtml()
   const restaurants = await getRestaurants()
   const dayOfWeek = days[new Date().getDay()]
@@ -44,4 +45,4 @@ module.exports.handler = async (event, context) => {
   }
 
   return response
-}
+})

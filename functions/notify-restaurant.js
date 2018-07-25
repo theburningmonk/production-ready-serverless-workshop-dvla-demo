@@ -1,3 +1,4 @@
+const Log = require('../lib/log')
 const _ = require('lodash')
 const { getRecords } = require('../lib/kinesis')
 const AWS = require('aws-sdk')
@@ -17,7 +18,7 @@ module.exports.handler = async (event, context) => {
       TopicArn: topicArn
     };
     await sns.publish(snsReq).promise()
-    console.log(`notified restaurant [${order.restaurantName}] of order [${order.orderId}]`)
+    Log.debug(`notified restaurant [${order.restaurantName}] of order [${order.orderId}]`)
 
     const data = _.clone(order)
     data.eventType = 'restaurant_notified'
@@ -28,6 +29,6 @@ module.exports.handler = async (event, context) => {
       StreamName: streamName
     }
     await kinesis.putRecord(kinesisReq).promise()
-    console.log(`published 'restaurant_notified' event to Kinesis`)
+    Log.debug(`published 'restaurant_notified' event to Kinesis`)
   }  
 }

@@ -17,6 +17,7 @@
     "mocha": "^5.2.0",
     "mock-aws": "^1.2.3",
     "serverless": "^1.28.0",
+    "serverless-iam-roles-per-function": "^1.0.1",
     "serverless-pseudo-parameters": "^1.6.0"
   },
   "dependencies": {

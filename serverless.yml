@@ -2,30 +2,13 @@ service: workshop-yancui
 
 plugins:
   - serverless-pseudo-parameters
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
   runtime: nodejs8.10
   stage: dev
   region: eu-west-1
-
-  iamRoleStatements:
-    - Effect: Allow
-      Action: dynamodb:scan
-      Resource:
-        Fn::GetAtt:
-          - restaurantsTable
-          - Arn
-    - Effect: Allow
-      Action: kinesis:PutRecord
-      Resource: 
-        Fn::GetAtt:
-          - orderEventsStream
-          - Arn
-    - Effect: Allow
-      Action: sns:Publish
-      Resource: 
-        Ref: restaurantNotificationTopic
 
 functions:
   get-index:
@@ -47,6 +30,10 @@ functions:
           - - "https://"
             - Ref: ApiGatewayRestApi
             - ".execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/orders"
+    iamRoleStatements:
+      - Effect: Allow
+        Action: execute-api:Invoke
+        Resource: arn:aws:execute-api:#{AWS::Region}:#{AWS::AccountId}:*/*/GET/restaurants
 
   get-restaurants:
     handler: functions/get-restaurants.handler
@@ -57,6 +44,13 @@ functions:
     environment:
       restaurants_table: 
         Ref: restaurantsTable
+    iamRoleStatements:
+      - Effect: Allow
+        Action: dynamodb:scan
+        Resource:
+          Fn::GetAtt:
+            - restaurantsTable
+            - Arn
 
   search-restaurants:
     handler: functions/search-restaurants.handler
@@ -67,6 +61,13 @@ functions:
     environment:
       restaurants_table:
         Ref: restaurantsTable
+    iamRoleStatements:
+      - Effect: Allow
+        Action: dynamodb:scan
+        Resource:
+          Fn::GetAtt:
+            - restaurantsTable
+            - Arn
 
   place-order:
     handler: functions/place-order.handler
@@ -77,6 +78,13 @@ functions:
     environment:
       order_events_stream: 
         Ref: orderEventsStream
+    iamRoleStatements:
+      - Effect: Allow
+        Action: kinesis:PutRecord
+        Resource: 
+          Fn::GetAtt:
+            - orderEventsStream
+            - Arn
 
   notify-restaurant:
     handler: functions/notify-restaurant.handler
@@ -92,6 +100,17 @@ functions:
         Ref: orderEventsStream
       restaurant_notification_topic: 
         Ref: restaurantNotificationTopic
+    iamRoleStatements:
+      - Effect: Allow
+        Action: kinesis:PutRecord
+        Resource: 
+          Fn::GetAtt:
+            - orderEventsStream
+            - Arn
+      - Effect: Allow
+        Action: sns:Publish
+        Resource: 
+          Ref: restaurantNotificationTopic
 
 resources:
   Resources:
